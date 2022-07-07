@@ -19,13 +19,14 @@ const style = useStyles()
 
 const addData = (tittle, body,_dueDate) => {
     const date = new Date(Date.now()).toLocaleString('en-US')
+    const dueDate = new Date(_dueDate).toLocaleString('en-US')
     const taskId = uid();
     set(ref(db,`${'toDoList/'} ${taskId}`),{
         id: taskId,
         tittle: tittle,
         body: body,
         createdAt: date,
-        date: _dueDate,
+        date: dueDate,
         completed: false,
 
     }).catch((error)=> {

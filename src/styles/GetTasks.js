@@ -10,4 +10,12 @@ export const useStyles = makeStyles((theme) => ({
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
+    textArea:{
+        textAlign: 'center',
+        width: 275,
+    },
+    checkBox:{
+       position: 'inherit',
+       marginLeft: 50
+    }
   }));

@@ -20,7 +20,7 @@ const DeleteTaskAlert = ({id, onClose}) => {
 
     return (
     <div className={style.modal}>
-        <Alert variant='filled' severity='error'>
+        <Alert  severity='error'>
             <Box>
                 <Typography>
                     Delete this Task?
@@ -30,7 +30,7 @@ const DeleteTaskAlert = ({id, onClose}) => {
                 <Button 
                 size='small'
                 variant='contained' 
-                color='primary'
+                color='inherit'
                 startIcon={<Delete/>} 
                 onClick={() => deleteTask(id)}> Delete
                 </Button>

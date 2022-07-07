@@ -20,7 +20,8 @@ const addData = (tittle, body,_dueDate) => {
         tittle: tittle,
         body: body,
         createdAt: date,
-        date: _dueDate
+        date: _dueDate,
+        completed: false,
     }).then(()=> {
         alert('Task Created')
     });

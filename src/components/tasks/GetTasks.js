@@ -1,5 +1,7 @@
+
+
 import React, { useEffect, useState } from 'react'
-import { getDatabase, ref,child, get , onValue} from 'firebase/database';
+import { getDatabase, ref,child, get , onValue,update} from 'firebase/database';
 import { db } from '../../firebase/firebase';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -7,6 +9,8 @@ import { Button, Card, CardActions, CardContent, Checkbox } from '@mui/material'
 import EditTask from './EditTask';
 import { Modal } from '@mui/material'
 import { useStyles } from '../../styles/GetTasks';
+import DeleteTaskAlert from './DeleteTaskAlert';
+
 
 const GetTasks = () => {
 
@@ -14,30 +18,14 @@ const GetTasks = () => {
     const [open, setOpen] = useState(false)
     const [taskToEdit, setTaskToEdit] = useState('')
     const [isChecked, setIsChecked] = useState(false)
+    const [openDeleteModal, setOpenDeleteModal] = useState(false)
+    const [taskToDelete, setTaskToDelete] = useState('')
+
     const classes = useStyles();
 
     useEffect(() => {
         getTasks()
     }, [])
-    
-    // useEffect(()=> {
-    //     printTask()
-    // }, [taskList])
-
-    // const getTasks = () =>{
-    //     const dbRef = ref(getDatabase())
-    //     get(child (dbRef, `toDoList/`)).then((snapshot) => {
-    //         if(snapshot.exists()){
-    //             const data = snapshot.val();
-    //             setTaskList(Object.values(data))
-    //         }else{
-    //             console.log('No Data')
-    //         }
-    //     }).catch((error) => {
-    //         alert(error.message)
-    //     })
-    //     printTask()
-    // }
 
     const getTasks = () => {
         onValue(ref(db, `toDoList/`), (snapshot) => {
@@ -53,20 +41,34 @@ const GetTasks = () => {
         })
     }
 
+    const updateTaskStatus = (id, isComplete) => {
+        update(ref(db,`${'toDoList/'} ${id}`),{
+           completed: !isComplete
+        }).catch((error)=> {
+            alert(error.message)
+        });
+    }
     const handleOpen= (selectedTask) =>{
         setTaskToEdit(selectedTask)
         setOpen(!open)
     }
 
+    const handleChangeChecked = (id, isComplete)=> {
+        updateTaskStatus(id, isComplete)
+    }
+
+    const handleDelete = (id) =>{
+        setTaskToDelete(id)
+        setOpenDeleteModal(true)
+    }
     const TaskRow = () =>{
       return (
         <React.Fragment>
         {
             taskList.map((task) => 
-            
-            <Grid key={task.id}item xs={4}>
+            <Grid key={task.id}item xs={12} sm={6}>
                 <Paper key={task.id}className={classes.paper}>{task.tittle}</Paper>
-                <Card>
+                <Card >
                     <CardContent>
                         <h6>{task.body}</h6>
                         <h6>{task.date}</h6>
@@ -74,8 +76,8 @@ const GetTasks = () => {
                     </CardContent>
                     <CardActions>
                         <Button onClick={() => handleOpen(task)}>Edit</Button>
-                        <Button>Delete</Button>
-                        <Checkbox checked = {isChecked} />
+                        <Button onClick={() => handleDelete(task.id)} >Delete</Button>
+                        <Checkbox defaultChecked={task.completed} onChange={()=>handleChangeChecked(task.id, task.completed)} />
                     </CardActions>
                 </Card>
             </Grid>)
@@ -98,6 +100,14 @@ const GetTasks = () => {
                 <EditTask selectedTask={taskToEdit} onClose={() => setOpen(!open)}/>
             </div>
         </Modal>
+        {taskToDelete && 
+        
+            <Modal open={openDeleteModal}>
+                <div>
+                    <DeleteTaskAlert id = {taskToDelete} onClose={()=> setOpenDeleteModal(false)}/>
+                </div>
+            </Modal>
+        }
     </div>
     </>
   )

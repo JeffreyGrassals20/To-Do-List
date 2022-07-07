@@ -4,7 +4,7 @@
 
 Clone the project directory by running the following command in your terminal. 
 
-### `Git Clone https://github.com/JeffreyGrassals20/To-Do-List.git`
+### `git clone https://github.com/JeffreyGrassals20/To-Do-List.git`
 
 Then, in the project directory, you run:
 
